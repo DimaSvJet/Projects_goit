@@ -1,0 +1,23 @@
+class Contacts:
+    current_id = 1
+
+    def __init__(self):
+        self.contacts = []
+
+    def list_contacts(self):
+        return self.contacts
+
+    def add_contacts(self, name, phone, email, favorite):
+        contact = {
+            "id": self.current_id,
+            "name": name,
+            "phone": phone,
+            "email": email,
+            "favorite": favorite,
+        }
+        self.contacts.append(contact)
+        self.current_id += 1
+
+contacts_manager = Contacts()
+contacts_manager.add_contacts("Wylie Pope", "(692) 802-2949", "est@utquamvel.net", True)
+print(contacts_manager.list_contacts())

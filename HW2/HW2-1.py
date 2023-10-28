@@ -1,8 +1,27 @@
+from collections import UserDict
+
+def input_error(error_message=None):
+    def decorator(func):
+        def inner(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except ValueError:
+                return error_message
+            except TypeError:
+                return error_message
+            except IndexError:
+                return error_message           
+            except KeyError:
+                return print("This name doesn't have any number")
+        return inner
+    return decorator
+
 def parse_input(user_input):
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
     return cmd, *args
 
+@input_error("Give me name and phone, please.")
 def add_contact(args, contacts):
     name, phone = args
     if name in contacts:
@@ -11,6 +30,7 @@ def add_contact(args, contacts):
         contacts[name] = phone
         return "Contact added."
 
+@input_error("Give me name and phone, please.")
 def change_contact(args, contacts):
     name, phone = args
     if name in contacts:
@@ -18,7 +38,8 @@ def change_contact(args, contacts):
         return "Contact updated."
     else:
         return add_contact(args, contacts)
-
+    
+@input_error("Enter user name, please.")
 def show_phone(args, contacts):
     name = args[0]
     if name in contacts:
@@ -38,7 +59,11 @@ def main():
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
-        command, *args = parse_input(user_input)
+        if not user_input:
+            print("Please, enter your command")
+            continue
+        else:
+            command, *args = parse_input(user_input)
 
         if command in ["good bye", "close", "exit"]:
             print("Good bye!")
@@ -64,3 +89,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
