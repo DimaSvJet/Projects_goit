@@ -1,4 +1,5 @@
 from collections import UserDict
+from HW3_2 import AddressBook, Name, Phone, Birthday
 
 def input_error(error_message=None):
     def decorator(func):
@@ -22,40 +23,43 @@ def parse_input(user_input):
     return cmd, *args
 
 @input_error("Give me name and phone, please.")
-def add_contact(args, contacts):
+def add_contact(args, book): #проверить! не работает - ссылается сюда find_contact
     name, phone = args
-    if name in contacts:
-        return change_contact(args, contacts)
+    contact = book.find_contact(name)
+    if contact:
+        return change_contact(args, book)
     else: 
-        contacts[name] = phone
+        phone_record = Phone(phone) 
+        new_contact = Name(name)
+        new_contact.add_phone(phone_record) 
+        book.add_contact(new_contact)
         return "Contact added."
 
 @input_error("Give me name and phone, please.")
-def change_contact(args, contacts):
+def change_contact(args, book):
     name, phone = args
-    if name in contacts:
-        contacts[name] = phone
+    contact = book.find_contact(name)
+    if contact:
+        contact['phone'] = [Phone(phone)]
         return "Contact updated."
     else:
-        return add_contact(args, contacts)
+        return add_contact(args, book)
     
 @input_error("Enter user name, please.")
-def show_phone(args, contacts):
+def show_phone(args, book):
     name = args[0]
-    if name in contacts:
-        phone = contacts[name]
+    contact = book.find_contact(name)
+    if contact:
+        phone = contact['phone'] #!!! Должно быть значение по ключу!!!!
         return f'{phone}'
     else:
         return "Sorry, we don't have contact with that name"
 
-def show_all(contacts):
-    contacts_list = ''
-    for i, (name, phone) in enumerate(contacts.items(), start = 1):
-        contacts_list += '{}. {} : {}\n'.format(i, name, phone)
-    return contacts_list
+def show_all(book):
+    return book.show_all()
 
 def main():
-    contacts = {}
+    book = AddressBook() # Создали класс записной книги "book"
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
@@ -73,16 +77,16 @@ def main():
             print("How can I help you?")
 
         elif command == "add":
-            print(add_contact(args, contacts))
+            print(add_contact(args, book))
 
         elif command == "change":
-            print(change_contact(args, contacts))
+            print(change_contact(args, book))
         
         elif command == "phone":
-            print(show_phone(args, contacts))
+            print(show_phone(args, book))
 
         elif command == "all":
-            print(show_all(contacts))
+            print(show_all(book))
 
         else:
             print("Invalid command.")
