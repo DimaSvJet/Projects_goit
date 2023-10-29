@@ -59,17 +59,6 @@ class Record:
     def list_phones(self):
         return self.phones[:]
 
-
-    # def get_contact_by_id(self, id):
-    #     result = list(filter(lambda contact: contact.get("id") == id, self.contacts))
-    #     return result[0] if len(result) > 0 else None
-
-    # def remove_contacts(self, id):
-    #     contact_to_remove = next((contact for contact in self.contacts if contact.get('id') == id), None)
-    #     if contact_to_remove is not None:
-    #         self.contacts.remove(contact_to_remove)
-    
-
 class AddressBook(UserDict):
     def add_contact(self, contact):
         contact_data = {
